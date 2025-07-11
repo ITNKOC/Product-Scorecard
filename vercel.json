@@ -1,6 +1,6 @@
 {
   "functions": {
-    "app/api/analyses/[id]/generate-report/route.ts": {
+    "app/api/generate-analysis-report/route.ts": {
       "maxDuration": 60
     },
     "app/api/analyses/route.ts": {
@@ -18,14 +18,5 @@
     "app/api/templates/route.ts": {
       "maxDuration": 30
     }
-  },
-  "build": {
-    "env": {
-      "SKIP_BUILD_STATIC_GENERATION": "1",
-      "DISABLE_STATIC_GENERATION": "true"
-    }
-  },
-  "buildCommand": "npm run build",
-  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
-  "framework": "nextjs"
+  }
 }

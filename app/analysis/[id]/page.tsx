@@ -56,8 +56,12 @@ export default function AnalysisReportPage() {
     
     setGenerating(true)
     try {
-      const response = await fetch(`/api/analyses/${analysis.id}/generate-report`, {
-        method: 'POST'
+      const response = await fetch(`/api/generate-analysis-report`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ analysisId: analysis.id })
       })
       const newReport = await response.json()
       setReport(newReport)
