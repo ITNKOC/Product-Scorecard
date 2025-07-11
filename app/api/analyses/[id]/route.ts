@@ -1,13 +1,30 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+function getPrismaClient() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not configured')
+  }
+  return new PrismaClient({
+    errorFormat: 'minimal'
+  })
+}
 
 export async function GET(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  let prisma: PrismaClient | null = null
+  
   try {
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      )
+    }
+
+    prisma = getPrismaClient()
     const analysis = await prisma.productAnalysis.findUnique({
       where: {
         id: params.id

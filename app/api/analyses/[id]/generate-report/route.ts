@@ -2,15 +2,22 @@ import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-// Initialize Prisma client with error handling
-const prisma = new PrismaClient({
-  errorFormat: 'minimal'
-})
+// Function to get Prisma client - avoid global instantiation
+function getPrismaClient() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not configured')
+  }
+  return new PrismaClient({
+    errorFormat: 'minimal'
+  })
+}
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  let prisma: PrismaClient | null = null
+  
   try {
     // Check if required environment variables are available
     if (!process.env.DATABASE_URL) {
@@ -19,6 +26,9 @@ export async function POST(
         { status: 500 }
       )
     }
+
+    // Initialize Prisma client
+    prisma = getPrismaClient()
 
     // Get the analysis
     const analysis = await prisma.productAnalysis.findUnique({
@@ -69,6 +79,11 @@ export async function POST(
       { error: 'Failed to generate report' },
       { status: 500 }
     )
+  } finally {
+    // Clean up Prisma client
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   }
 }
 

@@ -1,10 +1,28 @@
 import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 
-const prisma = new PrismaClient()
+// Function to get Prisma client - avoid global instantiation
+function getPrismaClient() {
+  if (!process.env.DATABASE_URL) {
+    throw new Error('DATABASE_URL is not configured')
+  }
+  return new PrismaClient({
+    errorFormat: 'minimal'
+  })
+}
 
 export async function GET() {
+  let prisma: PrismaClient | null = null
+  
   try {
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      )
+    }
+
+    prisma = getPrismaClient()
     const analyses = await prisma.productAnalysis.findMany({
       include: {
         user: {
@@ -33,11 +51,25 @@ export async function GET() {
       { error: 'Failed to fetch analyses' },
       { status: 500 }
     )
+  } finally {
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   }
 }
 
 export async function POST(request: Request) {
+  let prisma: PrismaClient | null = null
+  
   try {
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      )
+    }
+
+    prisma = getPrismaClient()
     const data = await request.json()
     
     // For now, create without user authentication
@@ -78,5 +110,9 @@ export async function POST(request: Request) {
       { error: 'Failed to create analysis' },
       { status: 500 }
     )
+  } finally {
+    if (prisma) {
+      await prisma.$disconnect()
+    }
   }
 }
