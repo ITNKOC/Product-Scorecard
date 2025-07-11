@@ -9,6 +9,13 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
+  experimental: {
+    serverComponentsExternalPackages: ['@prisma/client']
+  },
+  // Disable static optimization for API routes that use database
+  async rewrites() {
+    return []
+  },
 }
 
 module.exports = nextConfig

@@ -1,7 +1,11 @@
 import { NextResponse } from 'next/server'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+// This ensures the route is only executed during actual HTTP requests
+export const dynamic = 'force-dynamic'
+export const runtime = 'nodejs'
+
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY || '')
 
 // ============================================
 // SYSTÈME DE PROMPTS DYNAMIQUES CONTEXTUELS
