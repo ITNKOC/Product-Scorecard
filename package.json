@@ -12,7 +12,9 @@
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
     "db:seed": "tsx prisma/seed.ts",
-    "db:migrate-localStorage": "tsx lib/migrate-to-db.ts"
+    "db:migrate-localStorage": "tsx lib/migrate-to-db.ts",
+    "restore-generate-report": "node scripts/restore-generate-report.js",
+    "postbuild": "echo 'Build completed successfully. Run npm run restore-generate-report after deployment.'"
   },
   "dependencies": {
     "@google/generative-ai": "^0.15.0",
