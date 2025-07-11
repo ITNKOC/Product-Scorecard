@@ -21,7 +21,11 @@
   },
   "build": {
     "env": {
-      "SKIP_BUILD_STATIC_GENERATION": "1"
+      "SKIP_BUILD_STATIC_GENERATION": "1",
+      "DISABLE_STATIC_GENERATION": "true"
     }
-  }
+  },
+  "buildCommand": "npm run build",
+  "ignoreCommand": "git diff --quiet HEAD^ HEAD ./",
+  "framework": "nextjs"
 }

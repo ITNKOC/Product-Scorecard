@@ -12,10 +12,21 @@ const nextConfig = {
   experimental: {
     serverComponentsExternalPackages: ['@prisma/client']
   },
-  // Disable static optimization for API routes that use database
-  async rewrites() {
-    return []
+  // Force all API routes to be dynamic
+  async headers() {
+    return [
+      {
+        source: '/api/:path*',
+        headers: [
+          { key: 'Cache-Control', value: 'no-store, max-age=0' }
+        ]
+      }
+    ]
   },
+  // Completely skip static generation for problematic routes
+  async generateBuildId() {
+    return 'vercel-deployment'
+  }
 }
 
 module.exports = nextConfig

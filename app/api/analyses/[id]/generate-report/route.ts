@@ -1,15 +1,29 @@
 import { NextResponse } from 'next/server'
-import { GoogleGenerativeAI } from '@google/generative-ai'
-import prisma from '@/lib/prisma'
 
 // This ensures the route is only executed during actual HTTP requests
 export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
+export const revalidate = 0
+
+// Lazy load dependencies to avoid build-time execution
+const loadDependencies = async () => {
+  const { GoogleGenerativeAI } = await import('@google/generative-ai')
+  const prisma = (await import('@/lib/prisma')).default
+  return { GoogleGenerativeAI, prisma }
+}
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
+  // If we're in build mode, just return immediately
+  if (process.env.NODE_ENV === 'development' && !process.env.DATABASE_URL) {
+    return NextResponse.json(
+      { error: 'Route disabled during build' },
+      { status: 503 }
+    )
+  }
+
   try {
     // Check if required environment variables are available
     if (!process.env.DATABASE_URL) {
@@ -18,6 +32,9 @@ export async function POST(
         { status: 500 }
       )
     }
+
+    // Load dependencies at runtime
+    const { prisma } = await loadDependencies()
 
     // Get the analysis
     const analysis = await prisma.productAnalysis.findUnique({
@@ -150,6 +167,7 @@ async function generateAIReport(analysis: any, finalScore: number) {
     throw new Error('GEMINI_API_KEY not configured')
   }
   
+  const { GoogleGenerativeAI } = await loadDependencies()
   const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
