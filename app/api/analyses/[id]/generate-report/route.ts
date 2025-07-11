@@ -2,13 +2,24 @@ import { NextResponse } from 'next/server'
 import { PrismaClient } from '@prisma/client'
 import { GoogleGenerativeAI } from '@google/generative-ai'
 
-const prisma = new PrismaClient()
+// Initialize Prisma client with error handling
+const prisma = new PrismaClient({
+  errorFormat: 'minimal'
+})
 
 export async function POST(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
+    // Check if required environment variables are available
+    if (!process.env.DATABASE_URL) {
+      return NextResponse.json(
+        { error: 'Database not configured' },
+        { status: 500 }
+      )
+    }
+
     // Get the analysis
     const analysis = await prisma.productAnalysis.findUnique({
       where: { id: params.id },
@@ -95,7 +106,7 @@ function calculateFinalScore(analysis: any): number {
   maxScore += 10
 
   // 4. Qualitative Criteria (25 points)
-  const qualitativeFields = ['wowFactor', 'explanationSimplicity', 'easeOfUse', 'beforeAfterPotential']
+  const qualitativeFields = ['wowFactor', 'simplicity', 'easeOfUse', 'beforeAfterPotential']
   qualitativeFields.forEach(field => {
     if (analysis[field]) {
       score += (analysis[field] / 5) * 5 // Each field worth 5 points
@@ -109,10 +120,10 @@ function calculateFinalScore(analysis: any): number {
   maxScore += 10
 
   // 5. Competition (15 points)
-  if (analysis.directCompetitorsCount !== null) {
-    if (analysis.directCompetitorsCount <= 5) score += 15
-    else if (analysis.directCompetitorsCount <= 10) score += 12
-    else if (analysis.directCompetitorsCount <= 20) score += 8
+  if (analysis.competitorCount !== null) {
+    if (analysis.competitorCount <= 5) score += 15
+    else if (analysis.competitorCount <= 10) score += 12
+    else if (analysis.competitorCount <= 20) score += 8
     else score += 5
   }
   maxScore += 15
@@ -136,7 +147,11 @@ function calculateFinalScore(analysis: any): number {
 }
 
 async function generateAIReport(analysis: any, finalScore: number) {
-  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!)
+  if (!process.env.GEMINI_API_KEY) {
+    throw new Error('GEMINI_API_KEY not configured')
+  }
+  
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY)
   const model = genAI.getGenerativeModel({ model: 'gemini-1.5-flash' })
 
   // Calculate gross margin percentage
@@ -170,10 +185,9 @@ DONNÉES MARCHÉ:
 - Popularité réseaux sociaux: ${analysis.socialMediaPopularity}
 
 ANALYSE CONCURRENTIELLE:
-- Nombre de concurrents directs: ${analysis.directCompetitorsCount}
-- Qualité des boutiques concurrentes: ${analysis.competitorStoreQuality}/5
-- Visites mensuelles concurrent principal: ${analysis.competitorMonthlyVisits}
-- Publicités actives des concurrents: ${analysis.competitorActiveAds}
+- Nombre de concurrents directs: ${analysis.competitorCount}
+- Niveau de concurrence: ${analysis.competitionLevel}/5
+- Analyse des concurrents: ${analysis.competitorAdsAnalysis}
 - Prix des concurrents: ${analysis.competitorPrices}
 
 CRITÈRES QUALITATIFS:
@@ -185,23 +199,25 @@ CRITÈRES QUALITATIFS:
 - Potentiel avant/après: ${analysis.beforeAfterPotential}/5
 
 DONNÉES LOGISTIQUES:
-- Poids du produit: ${analysis.productWeight}kg
-- Dimensions: ${analysis.productDimensions}
-- Délai de réapprovisionnement: ${analysis.restockDelay} jours
+- Stock minimum: ${analysis.minimumStock}
+- Délai de livraison: ${analysis.deliveryTime} jours
+- Coût de stockage unitaire: ${analysis.storageCostPerUnit}€
 - Produit fragile: ${analysis.isFragile ? 'Oui' : 'Non'}
 - Variantes disponibles: ${analysis.availableVariants}
 
 SOCIAL PROOF:
-- Nombre d'avis sur produits similaires: ${analysis.similarProductsReviewCount}
+- Force de la preuve sociale: ${analysis.socialProofStrength}/5
+- Nombre d'avis moyens: ${analysis.averageReviewCount}
 - Note moyenne: ${analysis.averageRating}/5
-- Exemple avis positif: "${analysis.positiveReviewExample}"
-- Exemple avis négatif: "${analysis.negativeReviewExample}"
-- Taux d'engagement: ${analysis.engagementRate}%
+- Taux d'engagement: ${analysis.socialEngagementRate}%
+- Observations UGC: ${analysis.ugcObservations}
 
 STRATÉGIE COMMERCIALE:
-- Fréquence de rachat: ${analysis.repurchaseFrequency}
-- Barrières légales: ${analysis.legalBarriers}
-- Potentiel cross-sell/up-sell: ${analysis.crossSellUpSellPotential}
+- Investissement initial: ${analysis.initialInvestment}€
+- Budget marketing: ${analysis.marketingBudget}€
+- Taux de croissance marché: ${analysis.marketGrowthRate}%
+- Niveau barrières légales: ${analysis.legalBarriersLevel}/5
+- Notes stratégiques: ${analysis.strategicNotes}
 
 MISSION: Génère un rapport d'analyse ULTRA-DÉTAILLÉ et STRATÉGIQUE destiné à des professionnels du e-commerce. Sois précis, actionnable et sans complaisance.
 
@@ -390,7 +406,7 @@ N'ajoute AUCUN texte explicatif, UNIQUEMENT le JSON.
         launchPlan: "Lancement en 3 phases: test (30 jours), optimisation (30 jours), scale (30 jours)"
       },
       operationalRecommendations: {
-        testQuantity: Math.max(100, Math.round(analysis.breakEvenPoint * 1.5)),
+        testQuantity: Math.max(100, Math.round((analysis.initialInvestment || 1000) / (analysis.unitPrice || 10))),
         inventoryStrategy: "Stock de sécurité: 60 jours, réapprovisionnement automatique",
         kpis: ["CAC (coût d'acquisition)", "LTV (lifetime value)", "Taux de conversion", "ROAS (retour sur investissement publicitaire)"],
         vigilancePoints: ["Surveiller les métriques de performance quotidiennement", "Valider la qualité produit avec chaque lot", "Optimiser les coûts logistiques", "Monitorer la concurrence et leurs stratégies", "Analyser les retours clients pour améliorer", "Respecter les réglementations produit", "Diversifier les canaux d'acquisition", "Préparer la gestion des pics saisonniers"]
