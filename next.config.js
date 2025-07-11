@@ -7,10 +7,14 @@ const nextConfig = {
     ignoreDuringBuilds: true,
   },
   experimental: {
-    serverComponentsExternalPackages: ['@prisma/client']
+    serverComponentsExternalPackages: ['@prisma/client', 'prisma']
   },
-  // Disable all static optimization during build
-  output: 'standalone',
+  webpack: (config, { isServer }) => {
+    if (isServer) {
+      config.externals.push('@prisma/client')
+    }
+    return config
+  }
 }
 
 module.exports = nextConfig
