@@ -16,9 +16,21 @@ export async function GET(
       )
     }
 
+    console.log('Searching for analysis with ID:', params.id)
+
     // Lazy load Prisma to avoid build-time execution
     const { PrismaClient } = await import('@prisma/client')
     const prisma = new PrismaClient()
+
+    // First check if any analyses exist
+    const count = await prisma.productAnalysis.count()
+    console.log('Total analyses in database:', count)
+
+    // List all IDs for debugging
+    const allAnalyses = await prisma.productAnalysis.findMany({
+      select: { id: true, productName: true }
+    })
+    console.log('Available analyses:', allAnalyses)
 
     const analysis = await prisma.productAnalysis.findUnique({
       where: {
@@ -43,7 +55,12 @@ export async function GET(
     if (!analysis) {
       await prisma.$disconnect()
       return NextResponse.json(
-        { error: 'Analysis not found' },
+        { 
+          error: 'Analysis not found', 
+          searchedId: params.id,
+          availableIds: allAnalyses.map(a => a.id),
+          totalCount: count
+        },
         { status: 404 }
       )
     }
@@ -53,7 +70,7 @@ export async function GET(
   } catch (error) {
     console.error('Error fetching analysis:', error)
     return NextResponse.json(
-      { error: 'Failed to fetch analysis' },
+      { error: 'Failed to fetch analysis', details: error.message },
       { status: 500 }
     )
   }
