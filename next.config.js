@@ -24,7 +24,14 @@ const nextConfig = {
   // Disable static optimization for API routes
   async rewrites() {
     return []
-  }
+  },
+  
+  // Exclude API routes from static generation
+  generateStaticParams: false,
+  
+  // Skip build-time page data collection for dynamic routes
+  skipMiddlewareUrlNormalize: true,
+  skipTrailingSlashRedirect: true
 }
 
 module.exports = nextConfig

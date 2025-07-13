@@ -18,5 +18,11 @@
     "app/api/templates/route.ts": {
       "maxDuration": 30
     }
+  },
+  "buildCommand": "npm run build",
+  "framework": "nextjs",
+  "regions": ["iad1"],
+  "env": {
+    "SKIP_BUILD_STATIC_GENERATION": "1"
   }
 }
