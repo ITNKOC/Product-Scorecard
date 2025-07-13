@@ -79,64 +79,66 @@ export async function POST(request: Request) {
       }
     })
     
-    // Clean the data and ensure required fields
+    // Clean the data and map to correct schema fields
     const cleanData = {
       userId,
-      // Essential info
-      productName: data.productName || '',
-      category: data.category || '',
-      productDescription: data.productDescription || '',
-      targetAudience: data.targetAudience || '',
+      // Essential Information (required fields)
+      productName: data.productName || 'Produit Test',
+      productDescription: data.productDescription || 'Description du produit',
+      category: data.category || 'General',
+      sourcingUrl: data.sourcingUrl || null,
       
-      // Market analysis
-      searchVolume: data.searchVolume || 0,
-      trend: data.trend || 'stable',
-      competitionLevel: data.competitionLevel || 'medium',
-      averagePrice: data.averagePrice || 0,
-      
-      // Quality assessment
-      wowFactor: data.wowFactor || 5,
-      simplicity: data.simplicity || 5,
-      easeOfUse: data.easeOfUse || 5,
-      beforeAfterPotential: data.beforeAfterPotential || 5,
-      problemSolving: data.problemSolving || 5,
-      innovation: data.innovation || 5,
-      socialProofStrength: data.socialProofStrength || 5,
-      
-      // Financial data
-      costPrice: data.costPrice || 0,
-      sellingPrice: data.sellingPrice || 0,
-      profitMargin: data.profitMargin || 0,
-      minimumStock: data.minimumStock || 0,
-      deliveryTime: data.deliveryTime || 0,
-      storageCostPerUnit: data.storageCostPerUnit || 0,
-      initialInvestment: data.initialInvestment || 0,
-      marketingBudget: data.marketingBudget || 0,
-      
-      // Competition data
+      // Pricing & Costs
+      unitPrice: parseFloat(data.costPrice) || 0,
+      shippingCost: parseFloat(data.shippingCost) || null,
+      brandingCost: parseFloat(data.brandingCost) || null,
+      desiredSellingPrice: parseFloat(data.sellingPrice) || 0,
       competitorPrices: data.competitorPrices || [],
-      competitorAnalysis: data.competitorAnalysis || '',
-      marketGrowth: data.marketGrowth || 'stable',
       
-      // SWOT Analysis
-      strengths: data.strengths || [],
-      weaknesses: data.weaknesses || [],
-      opportunities: data.opportunities || [],
-      threats: data.threats || [],
+      // Market Trend & Interest
+      googleTrends12MonthAverage: parseFloat(data.searchVolume) || null,
+      monthlySearchVolume: parseInt(data.searchVolume) || null,
+      isSeasonalProduct: data.isSeasonalProduct || null,
+      socialMediaPopularity: data.socialMediaPopularity || null,
       
-      // Target audience
-      demographicProfile: data.demographicProfile || '',
-      psychographicProfile: data.psychographicProfile || '',
-      geographicProfile: data.geographicProfile || '',
+      // Qualitative Criteria
+      wowFactor: parseInt(data.wowFactor) || null,
+      simplicity: parseInt(data.simplicity) || null,
+      easeOfUse: parseInt(data.easeOfUse) || null,
+      solvesProblem: data.problemSolving ? true : false,
+      isInnovative: data.innovation ? true : false,
+      beforeAfterPotential: parseInt(data.beforeAfterPotential) || null,
       
-      // Marketing strategy
-      marketingChannels: data.marketingChannels || [],
-      contentStrategy: data.contentStrategy || '',
-      promotionalTactics: data.promotionalTactics || [],
+      // Competition Analysis
+      competitionLevel: parseInt(data.competitionLevel) || null,
+      competitorCount: parseInt(data.competitorCount) || null,
+      competitorAdsAnalysis: data.competitorAnalysis || null,
+      differentiationPoints: data.differentiationPoints || null,
       
-      // Calculated scores
-      totalScore: data.totalScore || 0,
-      maxScore: data.maxScore || 100
+      // Logistics & Stock
+      minimumStock: parseInt(data.minimumStock) || null,
+      deliveryTime: parseInt(data.deliveryTime) || null,
+      storageCostPerUnit: parseFloat(data.storageCostPerUnit) || null,
+      isFragile: data.isFragile || null,
+      availableVariants: data.availableVariants || null,
+      
+      // Social Proof & Reviews
+      socialProofStrength: parseInt(data.socialProofStrength) || null,
+      averageReviewCount: parseInt(data.averageReviewCount) || null,
+      averageRating: parseFloat(data.averageRating) || null,
+      socialEngagementRate: parseFloat(data.socialEngagementRate) || null,
+      ugcObservations: data.ugcObservations || null,
+      
+      // Financial & Strategic Data
+      initialInvestment: parseFloat(data.initialInvestment) || null,
+      marketingBudget: parseFloat(data.marketingBudget) || null,
+      marketGrowthRate: parseFloat(data.marketGrowthRate) || null,
+      legalBarriersLevel: parseInt(data.legalBarriersLevel) || null,
+      strategicNotes: data.strategicNotes || null,
+      
+      // Calculated fields
+      finalScore: parseFloat(data.totalScore) || null,
+      niche: data.niche || null
     }
     
     const analysis = await prisma.productAnalysis.create({
