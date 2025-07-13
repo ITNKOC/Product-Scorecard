@@ -5,11 +5,6 @@ export const dynamic = 'force-dynamic'
 export const runtime = 'nodejs'
 
 export async function GET() {
-  // Prevent execution during build
-  if (process.env.SKIP_PRISMA_VALIDATION === 'true') {
-    return NextResponse.json({ error: 'Build mode - route disabled' }, { status: 503 })
-  }
-  
   try {
     if (!process.env.DATABASE_URL) {
       return NextResponse.json(
@@ -55,11 +50,6 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
-  // Prevent execution during build
-  if (process.env.SKIP_PRISMA_VALIDATION === 'true') {
-    return NextResponse.json({ error: 'Build mode - route disabled' }, { status: 503 })
-  }
-  
   try {
     if (!process.env.DATABASE_URL) {
       return NextResponse.json(
@@ -89,11 +79,68 @@ export async function POST(request: Request) {
       }
     })
     
+    // Clean the data and ensure required fields
+    const cleanData = {
+      userId,
+      // Essential info
+      productName: data.productName || '',
+      category: data.category || '',
+      productDescription: data.productDescription || '',
+      targetAudience: data.targetAudience || '',
+      
+      // Market analysis
+      searchVolume: data.searchVolume || 0,
+      trend: data.trend || 'stable',
+      competitionLevel: data.competitionLevel || 'medium',
+      averagePrice: data.averagePrice || 0,
+      
+      // Quality assessment
+      wowFactor: data.wowFactor || 5,
+      simplicity: data.simplicity || 5,
+      easeOfUse: data.easeOfUse || 5,
+      beforeAfterPotential: data.beforeAfterPotential || 5,
+      problemSolving: data.problemSolving || 5,
+      innovation: data.innovation || 5,
+      socialProofStrength: data.socialProofStrength || 5,
+      
+      // Financial data
+      costPrice: data.costPrice || 0,
+      sellingPrice: data.sellingPrice || 0,
+      profitMargin: data.profitMargin || 0,
+      minimumStock: data.minimumStock || 0,
+      deliveryTime: data.deliveryTime || 0,
+      storageCostPerUnit: data.storageCostPerUnit || 0,
+      initialInvestment: data.initialInvestment || 0,
+      marketingBudget: data.marketingBudget || 0,
+      
+      // Competition data
+      competitorPrices: data.competitorPrices || [],
+      competitorAnalysis: data.competitorAnalysis || '',
+      marketGrowth: data.marketGrowth || 'stable',
+      
+      // SWOT Analysis
+      strengths: data.strengths || [],
+      weaknesses: data.weaknesses || [],
+      opportunities: data.opportunities || [],
+      threats: data.threats || [],
+      
+      // Target audience
+      demographicProfile: data.demographicProfile || '',
+      psychographicProfile: data.psychographicProfile || '',
+      geographicProfile: data.geographicProfile || '',
+      
+      // Marketing strategy
+      marketingChannels: data.marketingChannels || [],
+      contentStrategy: data.contentStrategy || '',
+      promotionalTactics: data.promotionalTactics || [],
+      
+      // Calculated scores
+      totalScore: data.totalScore || 0,
+      maxScore: data.maxScore || 100
+    }
+    
     const analysis = await prisma.productAnalysis.create({
-      data: {
-        userId,
-        ...data
-      },
+      data: cleanData,
       include: {
         user: {
           select: {
@@ -110,7 +157,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error creating analysis:', error)
     return NextResponse.json(
-      { error: 'Failed to create analysis' },
+      { error: 'Failed to create analysis', details: error.message },
       { status: 500 }
     )
   }
