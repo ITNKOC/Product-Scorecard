@@ -1,5 +1,4 @@
 import { NextResponse } from 'next/server'
-import prisma from '@/lib/prisma'
 
 // This ensures the route is only executed during actual HTTP requests
 export const dynamic = 'force-dynamic'
@@ -16,6 +15,10 @@ export async function GET(
         { status: 500 }
       )
     }
+
+    // Lazy load Prisma to avoid build-time execution
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
 
     const analysis = await prisma.productAnalysis.findUnique({
       where: {
@@ -38,12 +41,14 @@ export async function GET(
     })
 
     if (!analysis) {
+      await prisma.$disconnect()
       return NextResponse.json(
         { error: 'Analysis not found' },
         { status: 404 }
       )
     }
 
+    await prisma.$disconnect()
     return NextResponse.json(analysis)
   } catch (error) {
     console.error('Error fetching analysis:', error)
@@ -61,6 +66,10 @@ export async function PUT(
   try {
     const data = await request.json()
     
+    // Lazy load Prisma to avoid build-time execution
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
+    
     const analysis = await prisma.productAnalysis.update({
       where: {
         id: params.id
@@ -77,6 +86,7 @@ export async function PUT(
       }
     })
 
+    await prisma.$disconnect()
     return NextResponse.json(analysis)
   } catch (error) {
     console.error('Error updating analysis:', error)
@@ -92,12 +102,17 @@ export async function DELETE(
   { params }: { params: { id: string } }
 ) {
   try {
+    // Lazy load Prisma to avoid build-time execution
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
+    
     await prisma.productAnalysis.delete({
       where: {
         id: params.id
       }
     })
 
+    await prisma.$disconnect()
     return NextResponse.json({ success: true })
   } catch (error) {
     console.error('Error deleting analysis:', error)

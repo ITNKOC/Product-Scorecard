@@ -1,5 +1,4 @@
 import { NextRequest, NextResponse } from 'next/server';
-import prisma from '@/lib/prisma';
 
 // This ensures the route is only executed during actual HTTP requests
 export const dynamic = 'force-dynamic'
@@ -12,6 +11,10 @@ export async function GET(
   try {
     const id = params.id;
     
+    // Lazy load Prisma to avoid build-time execution
+    const { PrismaClient } = await import('@prisma/client')
+    const prisma = new PrismaClient()
+    
     // Fetch the analysis with user and reports
     const analysis = await prisma.productAnalysis.findUnique({
       where: { id },
@@ -22,6 +25,7 @@ export async function GET(
     });
 
     if (!analysis) {
+      await prisma.$disconnect()
       return NextResponse.json({ error: 'Analysis not found' }, { status: 404 });
     }
 
@@ -35,6 +39,7 @@ export async function GET(
       grossMarginPercentage: Math.max(0, grossMarginPercentage)
     };
 
+    await prisma.$disconnect()
     return NextResponse.json(analysisWithMargin);
   } catch (error) {
     console.error('Error fetching analysis for PDF:', error);
