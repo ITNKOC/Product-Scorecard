@@ -96,8 +96,8 @@ export async function POST(request: Request) {
       competitorPrices: data.competitorPrices || [],
       
       // Market Trend & Interest
-      googleTrends12MonthAverage: parseFloat(data.searchVolume) || null,
-      monthlySearchVolume: parseInt(data.searchVolume) || null,
+      googleTrends12MonthAverage: parseFloat(data.googleTrends12MonthAverage) || null,
+      monthlySearchVolume: parseInt(data.monthlySearchVolume) || null,
       isSeasonalProduct: data.isSeasonalProduct || null,
       socialMediaPopularity: data.socialMediaPopularity || null,
       

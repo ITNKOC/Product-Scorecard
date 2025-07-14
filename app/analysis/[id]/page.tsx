@@ -754,12 +754,17 @@ export default function AnalysisReportPage() {
                         Forces
                       </h5>
                       <ul className="text-sm text-emerald-700 space-y-2">
-                        {report.swotAnalysis.strengths.map((item: string, index: number) => (
+                        {report.swotAnalysis?.strengths?.map((item: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-emerald-500 mt-1">•</span>
                             <span>{item}</span>
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-start gap-2">
+                            <span className="text-emerald-500 mt-1">•</span>
+                            <span>Données non disponibles</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                     
@@ -769,12 +774,17 @@ export default function AnalysisReportPage() {
                         Faiblesses
                       </h5>
                       <ul className="text-sm text-red-700 space-y-2">
-                        {report.swotAnalysis.weaknesses.map((item: string, index: number) => (
+                        {report.swotAnalysis?.weaknesses?.map((item: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-red-500 mt-1">•</span>
                             <span>{item}</span>
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-start gap-2">
+                            <span className="text-red-500 mt-1">•</span>
+                            <span>Données non disponibles</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                     
@@ -784,12 +794,17 @@ export default function AnalysisReportPage() {
                         Opportunités
                       </h5>
                       <ul className="text-sm text-blue-700 space-y-2">
-                        {report.swotAnalysis.opportunities.map((item: string, index: number) => (
+                        {report.swotAnalysis?.opportunities?.map((item: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-blue-500 mt-1">•</span>
                             <span>{item}</span>
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-start gap-2">
+                            <span className="text-blue-500 mt-1">•</span>
+                            <span>Données non disponibles</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                     
@@ -799,12 +814,17 @@ export default function AnalysisReportPage() {
                         Menaces
                       </h5>
                       <ul className="text-sm text-orange-700 space-y-2">
-                        {report.swotAnalysis.threats.map((item: string, index: number) => (
+                        {report.swotAnalysis?.threats?.map((item: string, index: number) => (
                           <li key={index} className="flex items-start gap-2">
                             <span className="text-orange-500 mt-1">•</span>
                             <span>{item}</span>
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-start gap-2">
+                            <span className="text-orange-500 mt-1">•</span>
+                            <span>Données non disponibles</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </div>
