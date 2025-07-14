@@ -89,10 +89,10 @@ export async function POST(request: Request) {
       sourcingUrl: data.sourcingUrl || null,
       
       // Pricing & Costs
-      unitPrice: parseFloat(data.costPrice) || 0,
+      unitPrice: parseFloat(data.unitPrice) || 0,
       shippingCost: parseFloat(data.shippingCost) || null,
       brandingCost: parseFloat(data.brandingCost) || null,
-      desiredSellingPrice: parseFloat(data.sellingPrice) || 0,
+      desiredSellingPrice: parseFloat(data.desiredSellingPrice) || 0,
       competitorPrices: data.competitorPrices || [],
       
       // Market Trend & Interest
@@ -105,14 +105,14 @@ export async function POST(request: Request) {
       wowFactor: parseInt(data.wowFactor) || null,
       simplicity: parseInt(data.simplicity) || null,
       easeOfUse: parseInt(data.easeOfUse) || null,
-      solvesProblem: data.problemSolving ? true : false,
-      isInnovative: data.innovation ? true : false,
+      solvesProblem: data.solvesProblem ? true : false,
+      isInnovative: data.isInnovative ? true : false,
       beforeAfterPotential: parseInt(data.beforeAfterPotential) || null,
       
       // Competition Analysis
       competitionLevel: parseInt(data.competitionLevel) || null,
       competitorCount: parseInt(data.competitorCount) || null,
-      competitorAdsAnalysis: data.competitorAnalysis || null,
+      competitorAdsAnalysis: data.competitorAdsAnalysis || null,
       differentiationPoints: data.differentiationPoints || null,
       
       // Logistics & Stock
@@ -137,7 +137,7 @@ export async function POST(request: Request) {
       strategicNotes: data.strategicNotes || null,
       
       // Calculated fields
-      finalScore: parseFloat(data.totalScore) || null,
+      finalScore: parseFloat(data.finalScore) || null,
       niche: data.niche || null
     }
     
