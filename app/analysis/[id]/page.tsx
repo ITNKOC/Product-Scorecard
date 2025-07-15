@@ -876,32 +876,42 @@ export default function AnalysisReportPage() {
                     <div className="bg-gradient-to-br from-green-50 to-green-100 p-4 rounded-lg border border-green-200">
                       <h5 className="font-semibold text-green-800 mb-3">Canaux Prioritaires</h5>
                       <ul className="text-sm text-green-700 space-y-2">
-                        {report.marketingStrategy.channels.map((channel: string, index: number) => (
+                        {report.marketingStrategy?.channels?.map((channel: string, index: number) => (
                           <li key={index} className="flex items-center gap-2">
                             <span className="w-2 h-2 bg-green-500 rounded-full"></span>
                             {channel}
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-center gap-2">
+                            <span className="w-2 h-2 bg-green-500 rounded-full"></span>
+                            <span>Données non disponibles</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                     
                     <div className="bg-gradient-to-br from-indigo-50 to-indigo-100 p-4 rounded-lg border border-indigo-200">
                       <h5 className="font-semibold text-indigo-800 mb-3">Angles Créatifs</h5>
                       <ul className="text-sm text-indigo-700 space-y-2">
-                        {report.marketingStrategy.angles.map((angle: string, index: number) => (
+                        {report.marketingStrategy?.angles?.map((angle: string, index: number) => (
                           <li key={index} className="flex items-center gap-2">
                             <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
                             {angle}
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-center gap-2">
+                            <span className="w-2 h-2 bg-indigo-500 rounded-full"></span>
+                            <span>Données non disponibles</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </div>
                   
-                  {report.marketingStrategy.contentStrategy && (
+                  {report.marketingStrategy?.contentStrategy && (
                     <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                       <h5 className="font-medium text-gray-800 mb-2">Stratégie de Contenu</h5>
-                      <p className="text-sm text-gray-700">{report.marketingStrategy.contentStrategy}</p>
+                      <p className="text-sm text-gray-700">{report.marketingStrategy?.contentStrategy}</p>
                     </div>
                   )}
                 </div>
@@ -950,12 +960,12 @@ export default function AnalysisReportPage() {
                     <div>
                       <div className="bg-blue-50 p-4 rounded-lg mb-4">
                         <h5 className="font-semibold text-blue-800 mb-2">Quantité de Test</h5>
-                        <p className="text-2xl font-bold text-blue-900">{report.operationalRecommendations.testQuantity} unités</p>
+                        <p className="text-2xl font-bold text-blue-900">{report.operationalRecommendations?.testQuantity || 'N/A'} unités</p>
                       </div>
-                      {report.operationalRecommendations.inventoryStrategy && (
+                      {report.operationalRecommendations?.inventoryStrategy && (
                         <div className="bg-green-50 p-4 rounded-lg">
                           <h5 className="font-semibold text-green-800 mb-2">Stratégie d'Inventaire</h5>
-                          <p className="text-sm text-green-700">{report.operationalRecommendations.inventoryStrategy}</p>
+                          <p className="text-sm text-green-700">{report.operationalRecommendations?.inventoryStrategy}</p>
                         </div>
                       )}
                     </div>
@@ -963,21 +973,26 @@ export default function AnalysisReportPage() {
                     <div>
                       <h5 className="font-semibold text-gray-800 mb-3">Points de Vigilance</h5>
                       <ul className="space-y-2">
-                        {report.operationalRecommendations.vigilancePoints.map((point: string, index: number) => (
+                        {report.operationalRecommendations?.vigilancePoints?.map((point: string, index: number) => (
                           <li key={index} className="flex items-start gap-2 text-sm">
                             <span className="text-red-500 mt-1">⚠️</span>
                             <span className="text-gray-700">{point}</span>
                           </li>
-                        ))}
+                        )) || (
+                          <li className="flex items-start gap-2 text-sm">
+                            <span className="text-red-500 mt-1">⚠️</span>
+                            <span className="text-gray-700">Aucun point de vigilance défini</span>
+                          </li>
+                        )}
                       </ul>
                     </div>
                   </div>
                   
-                  {report.operationalRecommendations.kpis && (
+                  {report.operationalRecommendations?.kpis && (
                     <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                       <h5 className="font-medium text-gray-800 mb-2">KPIs à Surveiller</h5>
                       <div className="flex flex-wrap gap-2">
-                        {report.operationalRecommendations.kpis.map((kpi: string, index: number) => (
+                        {report.operationalRecommendations?.kpis?.map((kpi: string, index: number) => (
                           <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                             {kpi}
                           </span>
