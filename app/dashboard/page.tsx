@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { Card } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Select } from "@/components/ui/select";
+// import { Select } from "@/components/ui/select"; // Removed - using native select
 import Logo from "@/components/ui/Logo";
 import { ProductAnalysisWithUser } from "@/types/product";
 import { downloadAnalysisPDF } from "@/lib/pdf-generator";
@@ -25,6 +25,18 @@ export default function DashboardPage() {
 
   useEffect(() => {
     fetchAnalyses();
+  }, []);
+
+  useEffect(() => {
+    const handleClickOutside = () => {
+      document.querySelectorAll('[data-menu]').forEach(menu => {
+        menu.classList.remove('opacity-100', 'visible');
+        menu.classList.add('opacity-0', 'invisible');
+      });
+    };
+    
+    document.addEventListener('click', handleClickOutside);
+    return () => document.removeEventListener('click', handleClickOutside);
   }, []);
 
   const fetchAnalyses = async () => {
@@ -746,10 +758,10 @@ export default function DashboardPage() {
                   <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide hidden sm:block">
                     Catégorie
                   </label>
-                  <Select
+                  <select
                     value={selectedCategory}
                     onChange={(e) => setSelectedCategory(e.target.value)}
-                    className="w-full sm:min-w-[140px] h-12 sm:h-auto"
+                    className="w-full sm:min-w-[140px] h-12 sm:h-auto px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 4 5%22><path fill=%22%23666%22 d=%22M2 0L0 2h4zm0 5L0 3h4z%22/></svg>')] bg-[position:calc(100%-12px)_center] bg-no-repeat bg-[length:12px]"
                   >
                     <option value="all">Toutes les catégories</option>
                     {categories.map((cat) => (
@@ -757,7 +769,7 @@ export default function DashboardPage() {
                         {cat}
                       </option>
                     ))}
-                  </Select>
+                  </select>
                 </div>
 
                 <div className="flex gap-3">
@@ -765,33 +777,33 @@ export default function DashboardPage() {
                     <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide hidden sm:block">
                       Trier par
                     </label>
-                    <Select
+                    <select
                       value={sortBy}
                       onChange={(e) =>
                         setSortBy(e.target.value as "name" | "score" | "date")
                       }
-                      className="w-full sm:min-w-[120px] h-12 sm:h-auto"
+                      className="w-full sm:min-w-[120px] h-12 sm:h-auto px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 4 5%22><path fill=%22%23666%22 d=%22M2 0L0 2h4zm0 5L0 3h4z%22/></svg>')] bg-[position:calc(100%-12px)_center] bg-no-repeat bg-[length:12px]"
                     >
                       <option value="date">Date</option>
                       <option value="name">Nom</option>
                       <option value="score">Score</option>
-                    </Select>
+                    </select>
                   </div>
 
                   <div className="flex flex-col gap-1 flex-1">
                     <label className="text-xs font-semibold text-gray-600 uppercase tracking-wide hidden sm:block">
                       Ordre
                     </label>
-                    <Select
+                    <select
                       value={sortOrder}
                       onChange={(e) =>
                         setSortOrder(e.target.value as "asc" | "desc")
                       }
-                      className="w-full sm:min-w-[110px] h-12 sm:h-auto"
+                      className="w-full sm:min-w-[110px] h-12 sm:h-auto px-3 py-2 border border-gray-300 rounded-lg bg-white text-sm focus:outline-none focus:ring-2 focus:ring-black focus:border-black appearance-none bg-[url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 4 5%22><path fill=%22%23666%22 d=%22M2 0L0 2h4zm0 5L0 3h4z%22/></svg>')] bg-[position:calc(100%-12px)_center] bg-no-repeat bg-[length:12px]"
                     >
                       <option value="desc">↓ Desc</option>
                       <option value="asc">↑ Asc</option>
-                    </Select>
+                    </select>
                   </div>
                 </div>
               </div>
@@ -861,10 +873,44 @@ export default function DashboardPage() {
                     </div>
                   </div>
 
-                  {/* Header avec Menu Actions - Mobile Optimized */}
-                  <div className="flex items-start justify-between mb-6 ml-8 sm:ml-6">
-                    <div className="flex-1 pr-4">
-                      <h3 className="font-medium text-lg text-black group-hover:text-gray-700 transition-colors">
+                  {/* Product Image & Header - Mobile Optimized */}
+                  <div className="flex items-start gap-4 justify-between mb-6 ml-8 sm:ml-6">
+                    {/* Product Image */}
+                    <div className="flex-shrink-0">
+                      {analysis.productImageUrl ? (
+                        <div className="relative group/image">
+                          <img
+                            src={analysis.productImageUrl}
+                            alt={analysis.productName}
+                            className="w-16 h-16 sm:w-20 sm:h-20 object-cover rounded-xl border-2 border-gray-200 shadow-sm transition-all duration-300 group-hover:border-gray-300 group-hover:shadow-md"
+                            loading="lazy"
+                            onError={(e) => {
+                              const target = e.target as HTMLImageElement;
+                              target.style.display = 'none';
+                              target.nextElementSibling?.classList.remove('hidden');
+                            }}
+                          />
+                          {/* Fallback icon */}
+                          <div className="hidden w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-gray-200 flex items-center justify-center">
+                            <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                          {/* Hover overlay */}
+                          <div className="absolute inset-0 bg-black bg-opacity-0 group-hover/image:bg-opacity-10 rounded-xl transition-all duration-300"></div>
+                        </div>
+                      ) : (
+                        <div className="w-16 h-16 sm:w-20 sm:h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl border-2 border-gray-200 flex items-center justify-center group-hover:border-gray-300 transition-all duration-300">
+                          <svg className="w-8 h-8 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Product Info */}
+                    <div className="flex-1 min-w-0 pr-4">
+                      <h3 className="font-medium text-lg text-black group-hover:text-gray-700 transition-colors truncate">
                         {analysis.productName}
                       </h3>
                       <p className="text-sm text-gray-600 mt-1 font-light">

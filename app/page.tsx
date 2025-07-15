@@ -12,17 +12,19 @@ export default function HomePage() {
       <nav className="absolute top-0 left-0 right-0 z-10 py-4 sm:py-6 lg:py-8 px-4 sm:px-6">
         <div className="container mx-auto flex justify-center items-center">
           {/* Logo responsive: icon sur mobile, horizontal sur desktop */}
-          <div className="block sm:hidden">
-            <Logo size="lg" variant="icon" showText={false} />
-          </div>
-          <div className="hidden sm:block">
-            <Logo size="xl" variant="horizontal" showText={false} />
-          </div>
+          <Link href="/" className="cursor-pointer hover:opacity-80 transition-opacity duration-200">
+            <div className="block sm:hidden">
+              <Logo size="lg" variant="icon" showText={false} />
+            </div>
+            <div className="hidden sm:block">
+              <Logo size="xl" variant="horizontal" showText={false} />
+            </div>
+          </Link>
         </div>
       </nav>
 
       {/* Hero Section */}
-      <section className="relative pt-20 sm:pt-24 lg:pt-32 pb-16 sm:pb-20 lg:pb-24 px-4 sm:px-6">
+      <section className="relative pt-32 sm:pt-40 lg:pt-48 pb-16 sm:pb-20 lg:pb-24 px-4 sm:px-6">
         <div className="container mx-auto max-w-5xl">
           <div className="text-center space-y-8 sm:space-y-10 lg:space-y-12">
             {/* Hero Title */}
@@ -78,7 +80,9 @@ export default function HomePage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8 sm:gap-10 lg:gap-12">
             <div className="text-center group px-4 sm:px-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 group-hover:scale-105 transition-transform duration-300">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-white rounded-sm"></div>
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                </svg>
               </div>
               <h3 className="text-xl sm:text-2xl font-medium mb-3 sm:mb-4 text-black tracking-wide">
                 Analyse Multi-Critères
@@ -91,9 +95,9 @@ export default function HomePage() {
 
             <div className="text-center group px-4 sm:px-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 group-hover:scale-105 transition-transform duration-300">
-                <div className="w-6 h-6 sm:w-8 sm:h-8 border-2 border-white">
-                  <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-white rounded-full mx-auto mt-1.5 sm:mt-2"></div>
-                </div>
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
+                </svg>
               </div>
               <h3 className="text-xl sm:text-2xl font-medium mb-3 sm:mb-4 text-black tracking-wide">
                 Intelligence Artificielle
@@ -106,9 +110,9 @@ export default function HomePage() {
 
             <div className="text-center group px-4 sm:px-0">
               <div className="w-16 h-16 sm:w-20 sm:h-20 bg-black rounded-full flex items-center justify-center mx-auto mb-6 sm:mb-8 group-hover:scale-105 transition-transform duration-300">
-                <div className="w-6 h-0.5 sm:w-8 sm:h-1 bg-white mx-auto">
-                  <div className="w-0.5 h-4 sm:w-1 sm:h-6 bg-white mx-auto"></div>
-                </div>
+                <svg className="w-8 h-8 sm:w-10 sm:h-10 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+                </svg>
               </div>
               <h3 className="text-xl sm:text-2xl font-medium mb-3 sm:mb-4 text-black tracking-wide">
                 Rapports Détaillés

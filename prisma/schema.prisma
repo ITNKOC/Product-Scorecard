@@ -85,6 +85,7 @@ model ProductAnalysis {
   productDescription String   @db.Text
   category           String
   sourcingUrl        String?  // Alibaba link
+  productImageUrl    String?  // Cloudinary image URL
 
   // 2. Pricing & Costs
   unitPrice          Float

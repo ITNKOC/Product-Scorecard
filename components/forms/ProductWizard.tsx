@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 import Logo from "@/components/ui/Logo";
 import { ChevronLeft, ChevronRight, Check } from "lucide-react";
+import Link from "next/link";
 import { Step1_EssentialInfo } from "./wizard-steps/Step1_EssentialInfo";
 import { Step2_PricingCosts } from "./wizard-steps/Step2_PricingCosts";
 import { Step3_MarketTrend } from "./wizard-steps/Step3_MarketTrend";
@@ -16,60 +17,96 @@ import { Step6_LogisticsStock } from "./wizard-steps/Step6_LogisticsStock";
 import { Step7_SocialProof } from "./wizard-steps/Step7_SocialProof";
 import { Step8_FinancialStrategic } from "./wizard-steps/Step8_FinancialStrategic";
 
+// Step Icons Components
+const StepIcons = {
+  1: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+    </svg>
+  ),
+  2: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  3: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+    </svg>
+  ),
+  4: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z" />
+    </svg>
+  ),
+  5: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+    </svg>
+  ),
+  6: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
+    </svg>
+  ),
+  7: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
+    </svg>
+  ),
+  8: () => (
+    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2-2v2m8 0V6a2 2 0 012 2v6a2 2 0 01-2 2H6a2 2 0 01-2-2V8a2 2 0 012-2V6" />
+    </svg>
+  ),
+};
+
 const STEPS = [
   { 
     id: 1, 
     title: "Informations Essentielles", 
-    icon: "📝",
     requiredFields: ['productName', 'productDescription', 'category'],
     component: Step1_EssentialInfo 
   },
   { 
     id: 2, 
     title: "Prix et Coûts", 
-    icon: "💰",
     requiredFields: ['unitPrice', 'desiredSellingPrice'],
     component: Step2_PricingCosts 
   },
   { 
     id: 3, 
     title: "Tendance Marché", 
-    icon: "📈",
     requiredFields: ['googleTrends12MonthAverage'],
     component: Step3_MarketTrend 
   },
   { 
     id: 4, 
     title: "Critères Qualitatifs", 
-    icon: "⭐",
     requiredFields: ['wowFactor', 'simplicity', 'easeOfUse', 'solvesProblem'],
     component: Step4_QualitativeCriteria 
   },
   { 
     id: 5, 
     title: "Analyse Concurrence", 
-    icon: "🎯",
     requiredFields: ['competitionLevel'],
     component: Step5_CompetitionAnalysis 
   },
   { 
     id: 6, 
     title: "Logistique & Stock", 
-    icon: "📦",
     requiredFields: ['isFragile'],
     component: Step6_LogisticsStock 
   },
   { 
     id: 7, 
     title: "Preuve Sociale", 
-    icon: "👥",
     requiredFields: ['socialProofStrength'],
     component: Step7_SocialProof 
   },
   { 
     id: 8, 
     title: "Données Financières", 
-    icon: "💼",
     requiredFields: ['marketGrowthRate'],
     component: Step8_FinancialStrategic 
   },
@@ -237,30 +274,46 @@ export function ProductWizard({ editData }: ProductWizardProps) {
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
             {/* Logo */}
             <div className="flex-shrink-0">
-              <div className="block sm:hidden">
-                <Logo size="md" variant="icon" showText={false} />
-              </div>
-              <div className="hidden sm:block">
-                <Logo size="lg" variant="horizontal" showText={false} />
-              </div>
+              <Link href="/" className="cursor-pointer hover:opacity-80 transition-opacity duration-200">
+                <div className="block sm:hidden">
+                  <Logo size="md" variant="icon" showText={false} />
+                </div>
+                <div className="hidden sm:block">
+                  <Logo size="lg" variant="horizontal" showText={false} />
+                </div>
+              </Link>
             </div>
             
             {/* Title - Center */}
             <div className="text-center lg:flex-1">
-              <h1 className="text-2xl sm:text-3xl font-light text-black tracking-tight">
+              <h1 className="text-xl sm:text-3xl font-light text-black tracking-tight">
                 Analyse de Produit
               </h1>
-              <p className="text-sm text-gray-600 font-light mt-1">
+              <p className="text-xs sm:text-sm text-gray-600 font-light mt-1 block sm:hidden">
+                Étape {currentSection}/{STEPS.length}
+              </p>
+              <p className="text-sm text-gray-600 font-light mt-1 hidden sm:block">
                 Étape {currentSection} sur {STEPS.length}
               </p>
             </div>
             
             {/* Progress Badge - Right */}
             <div className="flex-shrink-0">
-              <div className="px-4 py-2 bg-gray-50 rounded-full border border-gray-200">
-                <span className="text-sm font-medium text-gray-700 tracking-wide">
-                  {Math.round((currentSection / STEPS.length) * 100)}% complété
-                </span>
+              {/* Mobile Version - Compact */}
+              <div className="block sm:hidden">
+                <div className="w-12 h-12 bg-black rounded-full flex items-center justify-center">
+                  <span className="text-white text-sm font-medium">
+                    {Math.round((currentSection / STEPS.length) * 100)}%
+                  </span>
+                </div>
+              </div>
+              {/* Desktop Version - Full */}
+              <div className="hidden sm:block">
+                <div className="px-4 py-2 bg-gray-50 rounded-full border border-gray-200">
+                  <span className="text-sm font-medium text-gray-700 tracking-wide">
+                    {Math.round((currentSection / STEPS.length) * 100)}% complété
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -298,38 +351,129 @@ export function ProductWizard({ editData }: ProductWizardProps) {
             </div>
           </div>
 
-          {/* Step Indicators - Mobile Optimized */}
-          <div className="flex items-center justify-center mb-6 sm:mb-8 px-4 overflow-x-auto">
-            <div className="flex items-center gap-1 sm:gap-2 min-w-max">
-              {STEPS.map((step, index) => (
-                <div key={step.id} className="flex items-center">
-                  <div 
-                    className={`
-                      flex items-center justify-center w-10 h-10 sm:w-8 sm:h-8 rounded-full text-sm font-medium transition-all
-                      ${step.id < currentSection 
-                        ? 'bg-emerald-500 text-white shadow-md' 
-                        : step.id === currentSection 
-                          ? 'bg-black text-white shadow-md ring-2 ring-gray-200' 
-                          : 'bg-gray-200 text-gray-600'
-                      }
-                    `}
-                  >
-                    {step.id < currentSection ? (
-                      <Check className="w-5 h-5 sm:w-4 sm:h-4" />
-                    ) : (
-                      step.id
-                    )}
+          {/* Step Indicators - Enhanced Mobile */}
+          <div className="mb-6 sm:mb-8">
+            {/* Mobile Version - Compact */}
+            <div className="block sm:hidden">
+              <div className="relative">
+                {/* Current Step Info */}
+                <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 bg-black rounded-full flex items-center justify-center">
+                        <div className="text-white">
+                          {StepIcons[currentSection as keyof typeof StepIcons]()}
+                        </div>
+                      </div>
+                      <div>
+                        <div className="font-medium text-gray-900">{currentStep.title}</div>
+                        <div className="text-sm text-gray-600">Étape {currentSection} sur {STEPS.length}</div>
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-lg font-medium text-gray-900">{Math.round(progress)}%</div>
+                      <div className="text-xs text-gray-500">Complété</div>
+                    </div>
                   </div>
-                  {index < STEPS.length - 1 && (
+                </div>
+
+                {/* Horizontal Step Navigator */}
+                <div className="relative">
+                  {/* Scroll Indicators */}
+                  {currentSection > 3 && (
+                    <div className="absolute left-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-md p-1">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                      </svg>
+                    </div>
+                  )}
+                  {currentSection < STEPS.length - 2 && (
+                    <div className="absolute right-0 top-1/2 -translate-y-1/2 z-10 bg-white rounded-full shadow-md p-1">
+                      <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                      </svg>
+                    </div>
+                  )}
+
+                  {/* Step Circles */}
+                  <div className="overflow-x-auto scrollbar-hide px-6">
+                    <div className="flex items-center gap-2 min-w-max py-2">
+                      {STEPS.map((step, index) => (
+                        <div key={step.id} className="flex items-center">
+                          <div 
+                            className={`
+                              flex items-center justify-center w-8 h-8 rounded-full text-xs font-medium transition-all
+                              ${step.id < currentSection 
+                                ? 'bg-emerald-500 text-white shadow-sm' 
+                                : step.id === currentSection 
+                                  ? 'bg-black text-white shadow-md scale-110' 
+                                  : 'bg-gray-200 text-gray-500'
+                              }
+                            `}
+                          >
+                            {step.id < currentSection ? (
+                              <Check className="w-3 h-3" />
+                            ) : step.id === currentSection ? (
+                              <div className="text-white">
+                                {StepIcons[step.id as keyof typeof StepIcons]()}
+                              </div>
+                            ) : (
+                              step.id
+                            )}
+                          </div>
+                          {index < STEPS.length - 1 && (
+                            <div 
+                              className={`
+                                w-4 h-0.5 mx-1
+                                ${step.id < currentSection ? 'bg-emerald-300' : 'bg-gray-300'}
+                              `} 
+                            />
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Desktop Version - Full */}
+            <div className="hidden sm:flex items-center justify-center px-4">
+              <div className="flex items-center gap-3">
+                {STEPS.map((step, index) => (
+                  <div key={step.id} className="flex items-center">
                     <div 
                       className={`
-                        w-6 sm:w-8 h-0.5 mx-1
-                        ${step.id < currentSection ? 'bg-emerald-500' : 'bg-gray-200'}
-                      `} 
-                    />
-                  )}
-                </div>
-              ))}
+                        flex items-center justify-center w-10 h-10 rounded-full text-sm font-medium transition-all
+                        ${step.id < currentSection 
+                          ? 'bg-emerald-500 text-white shadow-md' 
+                          : step.id === currentSection 
+                            ? 'bg-black text-white shadow-md ring-2 ring-gray-200' 
+                            : 'bg-gray-200 text-gray-600'
+                        }
+                      `}
+                    >
+                      {step.id < currentSection ? (
+                        <Check className="w-5 h-5" />
+                      ) : step.id === currentSection ? (
+                        <div className="text-white">
+                          {StepIcons[step.id as keyof typeof StepIcons]()}
+                        </div>
+                      ) : (
+                        step.id
+                      )}
+                    </div>
+                    {index < STEPS.length - 1 && (
+                      <div 
+                        className={`
+                          w-8 h-0.5 mx-2
+                          ${step.id < currentSection ? 'bg-emerald-500' : 'bg-gray-200'}
+                        `} 
+                      />
+                    )}
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
 

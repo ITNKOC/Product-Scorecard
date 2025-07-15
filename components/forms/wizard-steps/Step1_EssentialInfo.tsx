@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { AIAssistancePanel } from "@/components/ui/ai-assistance-panel";
+import ImageUpload from "@/components/ui/ImageUpload";
 import { useState } from "react";
 import { HelpCircle } from "lucide-react";
 
@@ -119,6 +120,41 @@ export function Step1_EssentialInfo() {
             />
           )}
         </div>
+      </div>
+
+      {/* Product Image */}
+      <div className="space-y-2">
+        <div className="flex items-center justify-between">
+          <Label htmlFor="productImage" className="text-sm font-medium">
+            Image du produit
+          </Label>
+          <button
+            type="button"
+            onClick={() => handleAssistanceClick("productImage")}
+            className="text-blue-500 hover:text-blue-700 transition-colors"
+          >
+            <HelpCircle className="w-4 h-4" />
+          </button>
+        </div>
+        <ImageUpload
+          value={formData.productImageUrl}
+          onChange={(url) => updateFormData({ productImageUrl: url || undefined })}
+        />
+        <p className="text-xs text-muted-foreground">
+          Une image claire de votre produit aide à une meilleure analyse et présentation.
+        </p>
+        {activeAssistance === "productImage" && (
+          <AIAssistancePanel
+            section="essential"
+            field="productImage"
+            context={{
+              productName: formData.productName,
+              category: formData.category,
+              description: formData.productDescription,
+            }}
+            onClose={() => setActiveAssistance(null)}
+          />
+        )}
       </div>
 
       {/* Product Description */}

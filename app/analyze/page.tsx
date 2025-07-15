@@ -49,17 +49,6 @@ function AnalyzePageContent() {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-4">
-            {editId ? '✏️ Modifier l\'Analyse' : '🔍 Analyser un Nouveau Produit'}
-          </h1>
-          <p className="text-muted-foreground">
-            {editId 
-              ? 'Modifiez les informations de votre produit et régénérez l\'analyse si nécessaire.'
-              : 'Suivez notre assistant intelligent en 8 étapes pour obtenir une analyse complète de votre produit e-commerce.'
-            }
-          </p>
-        </div>
 
         {/* Product Wizard */}
         <ProductWizard editData={editData} />

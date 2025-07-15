@@ -4,6 +4,7 @@ export interface ProductAnalysisData {
   productDescription: string
   category: string
   sourcingUrl?: string
+  productImageUrl?: string
 
   // 2. Pricing & Costs
   unitPrice: number

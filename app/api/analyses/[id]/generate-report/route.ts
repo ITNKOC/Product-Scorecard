@@ -32,9 +32,12 @@ export async function POST(
     const finalScore = calculateFinalScore(analysis)
 
     // Generate AI report
+    console.log('🔧 Generating AI report for analysis:', analysis.id)
     const aiReport = await generateAIReport(analysis, finalScore)
+    console.log('✅ AI report generated:', JSON.stringify(aiReport, null, 2))
 
     // Save the report
+    console.log('💾 Saving report to database...')
     const report = await prisma.analysisReport.create({
       data: {
         productAnalysisId: analysis.id,
@@ -55,6 +58,7 @@ export async function POST(
       data: { finalScore }
     })
 
+    console.log('✅ Report saved successfully:', report.id)
     await prisma.$disconnect()
 
     return NextResponse.json(report)
@@ -211,23 +215,29 @@ N'ajoute AUCUN texte explicatif, UNIQUEMENT le JSON.
 `
 
   try {
+    console.log('🤖 Calling Gemini API...')
     const result = await model.generateContent(prompt)
     const response = await result.response
     const text = response.text()
+    console.log('🤖 Gemini response received:', text.substring(0, 200) + '...')
     
     // Clean and parse JSON
     let jsonText = text.replace(/```json|```/g, '').trim()
+    console.log('🧹 Cleaned JSON:', jsonText.substring(0, 200) + '...')
     
     try {
       const parsedData = JSON.parse(jsonText)
+      console.log('✅ JSON parsed successfully')
       return {
         ...parsedData,
         prompt
       }
     } catch (parseError) {
-      console.error('JSON Parse Error:', parseError)
+      console.error('❌ JSON Parse Error:', parseError)
+      console.log('📝 Raw text that failed to parse:', jsonText)
       
       // Fallback response
+      console.log('🔄 Using fallback response')
       return {
         customerPersona: "Homme ou femme âgé de 25-45 ans, actif sur les réseaux sociaux, à la recherche de solutions pratiques pour améliorer son quotidien.",
         swotAnalysis: {

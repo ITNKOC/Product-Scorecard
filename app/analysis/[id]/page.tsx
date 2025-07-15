@@ -167,14 +167,9 @@ export default function AnalysisReportPage() {
         <div className="container mx-auto px-4 sm:px-6 py-6 sm:py-8">
           {/* Layout horizontal comme le dashboard */}
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
-            {/* Logo */}
+            {/* Logo - Compact */}
             <div className="flex-shrink-0">
-              <div className="block sm:hidden">
-                <Logo size="md" variant="icon" showText={false} />
-              </div>
-              <div className="hidden sm:block">
-                <Logo size="lg" variant="horizontal" showText={false} />
-              </div>
+              <Logo size="md" variant="icon" showText={false} />
             </div>
             
             {/* Informations produit - Centre */}
@@ -548,6 +543,43 @@ export default function AnalysisReportPage() {
 
               {/* Right Column */}
               <div className="space-y-6">
+                {/* Product Image Display - Enhanced */}
+                {analysis.productImageUrl && (
+                  <div>
+                    <h4 className="font-semibold text-gray-900 mb-3">Image Produit</h4>
+                    <div className="relative group">
+                      <img
+                        src={analysis.productImageUrl}
+                        alt={analysis.productName}
+                        className="w-full max-w-sm mx-auto h-64 object-cover rounded-2xl border-2 border-gray-200 shadow-lg transition-all duration-300 group-hover:border-gray-300 group-hover:shadow-xl"
+                        loading="lazy"
+                        onError={(e) => {
+                          const target = e.target as HTMLImageElement;
+                          target.style.display = 'none';
+                          target.nextElementSibling?.classList.remove('hidden');
+                        }}
+                      />
+                      {/* Fallback */}
+                      <div className="hidden w-full max-w-sm mx-auto h-64 bg-gradient-to-br from-gray-100 to-gray-200 rounded-2xl border-2 border-gray-200 flex items-center justify-center">
+                        <div className="text-center text-gray-400">
+                          <svg className="w-16 h-16 mx-auto mb-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                          </svg>
+                          <p className="text-sm">Image non disponible</p>
+                        </div>
+                      </div>
+                      {/* Elegant hover overlay */}
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 rounded-2xl transition-all duration-300"></div>
+                      {/* View full size hint */}
+                      <div className="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                        <div className="bg-black/70 text-white px-2 py-1 rounded-lg text-xs">
+                          Aperçu
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
+                
                 <div>
                   <h4 className="font-semibold text-gray-900 mb-3">Analyse Financière</h4>
                   <div className="space-y-3">
