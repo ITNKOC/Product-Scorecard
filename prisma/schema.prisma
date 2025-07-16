@@ -153,17 +153,50 @@ model AnalysisReport {
   createdAt         DateTime @default(now())
   updatedAt         DateTime @updatedAt
 
-  // Generated content
+  // Generated content - PROFESSIONAL REPORT STRUCTURE
   finalScore               Float
+  
+  // Executive Summary (v2.0 Professional)
+  executiveSummary         String?  @db.Text
+  riskAssessment          String?  @db.Text
+  
+  // Business Analysis
   customerPersona          String   @db.Text
   swotAnalysis            Json     // {strengths: [], weaknesses: [], opportunities: [], threats: []}
-  marketingStrategy       Json     // {channels: [], angles: [], recommendedPrice: number}
-  operationalRecommendations Json  // {testQuantity: number, vigilancePoints: []}
+  competitiveAnalysis     Json?    // {positioning: string, advantages: [], threats: [], differentiation: []}
+  
+  // Market Analysis (v2.0 Professional) 
+  marketAnalysis          Json?    // {size: string, growth: string, trends: [], seasonality: string}
+  demandValidation        Json?    // {signals: [], risks: [], validation_methods: []}
+  
+  // Product Strategy (v2.0 Professional)
+  productTesting          Json?    // {methodology: string, quantity: number, kpis: [], timeline: string}
+  sourcingStrategy        Json?    // {suppliers: [], negotiation: [], quality_control: [], logistics: []}
+  
+  // Marketing Strategy (v2.0 Professional)
+  tiktokStrategy          Json?    // {organic: {}, viral_content: {}, influencers: {}}
+  metaAdsStrategy         Json?    // {audiences: [], creatives: [], budgets: [], funnels: []}
+  marketingStrategy       Json     // {channels: [], budget_allocation: {}, launch_plan: {}}
+  
+  // Operations (v2.0 Professional)
+  operationalPlan         Json?    // {inventory: {}, fulfillment: {}, customer_service: {}}
+  financialProjections   Json?    // {revenue: {}, costs: {}, roi: {}, break_even: {}}
+  
+  // Action Plan (v2.0 Professional)
+  implementationRoadmap   Json?    // {phases: [], milestones: [], timeline: {}}
+  kpiDashboard           Json?    // {metrics: [], targets: [], monitoring: []}
+  contingencyPlans       Json?    // {scenarios: [], mitigation: [], pivots: []}
 
   // AI generation metadata
-  aiModel          String  @default("gemini-pro")
+  aiModel          String  @default("gemini-1.5-flash")
   generationPrompt String? @db.Text
   processingTime   Int?    // milliseconds
+  reportVersion    String  @default("v2.0-professional")
+  
+  // Professional Report Settings
+  reportTemplate   String  @default("ecommerce-professional")
+  analysisDepth    String  @default("comprehensive") // basic, detailed, comprehensive
+  industryFocus    String? // e-commerce, saas, physical-products, etc.
 
   // Relations
   productAnalysis ProductAnalysis @relation(fields: [productAnalysisId], references: [id], onDelete: Cascade)

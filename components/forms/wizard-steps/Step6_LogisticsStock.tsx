@@ -124,8 +124,11 @@ export function Step6_LogisticsStock() {
             id="minStock"
             type="number"
             min="0"
-            value={formData.minimumStock || ''}
-            onChange={(e) => updateFormData({ minimumStock: Number(e.target.value) })}
+            value={formData.minimumStock !== undefined ? formData.minimumStock : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ minimumStock: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 100"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -165,8 +168,11 @@ export function Step6_LogisticsStock() {
             id="deliveryTime"
             type="number"
             min="1"
-            value={formData.deliveryTime || ''}
-            onChange={(e) => updateFormData({ deliveryTime: Number(e.target.value) })}
+            value={formData.deliveryTime !== undefined ? formData.deliveryTime : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ deliveryTime: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 15"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -206,8 +212,11 @@ export function Step6_LogisticsStock() {
             type="number"
             step="0.01"
             min="0"
-            value={formData.storageCostPerUnit || ''}
-            onChange={(e) => updateFormData({ storageCostPerUnit: Number(e.target.value) })}
+            value={formData.storageCostPerUnit !== undefined ? formData.storageCostPerUnit : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ storageCostPerUnit: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 0.25"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />

@@ -120,8 +120,11 @@ export function Step5_CompetitionAnalysis() {
             id="competitorCount"
             type="number"
             min="0"
-            value={formData.competitorCount || ''}
-            onChange={(e) => updateFormData({ competitorCount: Number(e.target.value) })}
+            value={formData.competitorCount !== undefined ? formData.competitorCount : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ competitorCount: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 25"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />

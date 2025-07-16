@@ -120,8 +120,11 @@ export function Step7_SocialProof() {
             id="avgReviews"
             type="number"
             min="0"
-            value={formData.averageReviewCount || ''}
-            onChange={(e) => updateFormData({ averageReviewCount: Number(e.target.value) })}
+            value={formData.averageReviewCount !== undefined ? formData.averageReviewCount : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ averageReviewCount: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 250"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -163,8 +166,11 @@ export function Step7_SocialProof() {
             step="0.1"
             min="0"
             max="5"
-            value={formData.averageRating || ''}
-            onChange={(e) => updateFormData({ averageRating: Number(e.target.value) })}
+            value={formData.averageRating !== undefined ? formData.averageRating : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ averageRating: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 4.2"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -218,8 +224,11 @@ export function Step7_SocialProof() {
             step="0.1"
             min="0"
             max="100"
-            value={formData.socialEngagementRate || ''}
-            onChange={(e) => updateFormData({ socialEngagementRate: Number(e.target.value) })}
+            value={formData.socialEngagementRate !== undefined ? formData.socialEngagementRate : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ socialEngagementRate: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 3.5"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />

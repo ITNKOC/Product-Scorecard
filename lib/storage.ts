@@ -20,7 +20,9 @@ export interface StoredReport {
   customerPersona: string
   swotAnalysis: any
   marketingStrategy: any
-  operationalRecommendations: any
+  reportVersion?: string
+  // Professional report fields are stored as any for flexibility
+  [key: string]: any
 }
 
 class LocalStorage {

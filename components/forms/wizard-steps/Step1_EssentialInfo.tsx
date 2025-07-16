@@ -49,13 +49,7 @@ export function Step1_EssentialInfo() {
             <Label htmlFor="productName" className="text-sm font-medium">
               Nom du produit *
             </Label>
-            <button
-              type="button"
-              onClick={() => handleAssistanceClick("productName")}
-              className="text-blue-500 hover:text-blue-700 transition-colors"
-            >
-              <HelpCircle className="w-4 h-4" />
-            </button>
+            {/* AI assistance disabled for product name */}
           </div>
           <Input
             id="productName"
@@ -65,18 +59,7 @@ export function Step1_EssentialInfo() {
             required
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
-          {activeAssistance === "productName" && (
-            <AIAssistancePanel
-              section="essential"
-              field="productName"
-              context={{
-                productName: formData.productName,
-                category: formData.category,
-                description: formData.productDescription,
-              }}
-              onClose={() => setActiveAssistance(null)}
-            />
-          )}
+          {/* No AI assistance for product name */}
         </div>
 
         {/* Category */}
@@ -85,13 +68,7 @@ export function Step1_EssentialInfo() {
             <Label htmlFor="category" className="text-sm font-medium">
               Catégorie *
             </Label>
-            <button
-              type="button"
-              onClick={() => handleAssistanceClick("category")}
-              className="text-blue-500 hover:text-blue-700 transition-colors"
-            >
-              <HelpCircle className="w-4 h-4" />
-            </button>
+            {/* AI assistance disabled for category */}
           </div>
           <select
             id="category"
@@ -107,18 +84,7 @@ export function Step1_EssentialInfo() {
               </option>
             ))}
           </select>
-          {activeAssistance === "category" && (
-            <AIAssistancePanel
-              section="essential"
-              field="category"
-              context={{
-                productName: formData.productName,
-                category: formData.category,
-                description: formData.productDescription,
-              }}
-              onClose={() => setActiveAssistance(null)}
-            />
-          )}
+          {/* No AI assistance for category */}
         </div>
       </div>
 
@@ -128,13 +94,7 @@ export function Step1_EssentialInfo() {
           <Label htmlFor="productImage" className="text-sm font-medium">
             Image du produit
           </Label>
-          <button
-            type="button"
-            onClick={() => handleAssistanceClick("productImage")}
-            className="text-blue-500 hover:text-blue-700 transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" />
-          </button>
+          {/* AI assistance disabled for product image */}
         </div>
         <ImageUpload
           value={formData.productImageUrl}
@@ -143,18 +103,7 @@ export function Step1_EssentialInfo() {
         <p className="text-xs text-muted-foreground">
           Une image claire de votre produit aide à une meilleure analyse et présentation.
         </p>
-        {activeAssistance === "productImage" && (
-          <AIAssistancePanel
-            section="essential"
-            field="productImage"
-            context={{
-              productName: formData.productName,
-              category: formData.category,
-              description: formData.productDescription,
-            }}
-            onClose={() => setActiveAssistance(null)}
-          />
-        )}
+        {/* No AI assistance for product image */}
       </div>
 
       {/* Product Description */}
@@ -177,18 +126,17 @@ export function Step1_EssentialInfo() {
           onChange={(e) =>
             updateFormData({ productDescription: e.target.value })
           }
-          placeholder="Décrivez l'usage, les matériaux, la cible, les bénéfices..."
+          placeholder="Fournissez une description de base de votre produit. L'IA proposera ensuite une version améliorée et plus professionnelle."
           className="min-h-[120px] transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           required
         />
         <p className="text-xs text-muted-foreground">
-          Plus votre description est précise, plus l'IA pourra vous aider
-          efficacement dans les étapes suivantes.
+          📝 Saisissez d'abord votre description, puis l'IA vous proposera une version optimisée
         </p>
         {activeAssistance === "description" && (
           <AIAssistancePanel
             section="essential"
-            field="description"
+            field="descriptionImprovement"
             context={{
               productName: formData.productName,
               category: formData.category,
@@ -219,13 +167,13 @@ export function Step1_EssentialInfo() {
           type="url"
           value={formData.sourcingUrl || ""}
           onChange={(e) => updateFormData({ sourcingUrl: e.target.value })}
-          placeholder="https://alibaba.com/product/..."
+          placeholder="https://alibaba.com/product/... (optionnel - voir guide IA)"
           className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
         />
         {activeAssistance === "sourcing" && (
           <AIAssistancePanel
             section="essential"
-            field="sourcing"
+            field="sourcingGuide"
             context={{
               productName: formData.productName,
               category: formData.category,

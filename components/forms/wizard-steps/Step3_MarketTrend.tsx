@@ -65,8 +65,11 @@ export function Step3_MarketTrend() {
             step="0.1"
             min="0"
             max="100"
-            value={formData.googleTrends12MonthAverage || ''}
-            onChange={(e) => updateFormData({ googleTrends12MonthAverage: Number(e.target.value) })}
+            value={formData.googleTrends12MonthAverage !== undefined ? formData.googleTrends12MonthAverage : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ googleTrends12MonthAverage: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 65.5"
             required
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
@@ -82,8 +85,8 @@ export function Step3_MarketTrend() {
           </p>
           {activeAssistance === 'googleTrends' && (
             <AIAssistancePanel
-              section="market-trend"
-              field="googleTrends"
+              section="trends"
+              field="keywordSuggestions"
               context={{
                 productName: formData.productName,
                 category: formData.category,
@@ -113,8 +116,11 @@ export function Step3_MarketTrend() {
             id="searchVolume"
             type="number"
             min="0"
-            value={formData.monthlySearchVolume || ''}
-            onChange={(e) => updateFormData({ monthlySearchVolume: Number(e.target.value) })}
+            value={formData.monthlySearchVolume !== undefined ? formData.monthlySearchVolume : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ monthlySearchVolume: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 8500"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -128,11 +134,12 @@ export function Step3_MarketTrend() {
           </p>
           {activeAssistance === 'searchVolume' && (
             <AIAssistancePanel
-              section="market-trend"
-              field="searchVolume"
+              section="trends"
+              field="ubersuggestGuide"
               context={{
                 productName: formData.productName,
                 category: formData.category,
+                description: formData.productDescription,
                 googleTrends: formData.googleTrends12MonthAverage
               }}
               onClose={() => setActiveAssistance(null)}

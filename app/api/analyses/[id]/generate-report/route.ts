@@ -36,8 +36,8 @@ export async function POST(
     const aiReport = await generateAIReport(analysis, finalScore)
     console.log('✅ AI report generated:', JSON.stringify(aiReport, null, 2))
 
-    // Save the report
-    console.log('💾 Saving report to database...')
+    // Save the report (legacy format)
+    console.log('💾 Saving legacy report to database...')
     const report = await prisma.analysisReport.create({
       data: {
         productAnalysisId: analysis.id,
@@ -46,9 +46,9 @@ export async function POST(
         customerPersona: aiReport.customerPersona,
         swotAnalysis: aiReport.swotAnalysis,
         marketingStrategy: aiReport.marketingStrategy,
-        operationalRecommendations: aiReport.operationalRecommendations,
         aiModel: 'gemini-1.5-flash',
-        generationPrompt: aiReport.prompt
+        generationPrompt: aiReport.prompt,
+        reportVersion: 'v1.0-legacy'
       }
     })
 
@@ -204,10 +204,6 @@ Format JSON exact:
     "channels": ["canal 1", "canal 2", "canal 3"],
     "budget": "string",
     "launchPlan": "string"
-  },
-  "operationalRecommendations": {
-    "testQuantity": 100,
-    "vigilancePoints": ["point 1", "point 2", "point 3"]
   }
 }
 
@@ -250,10 +246,6 @@ N'ajoute AUCUN texte explicatif, UNIQUEMENT le JSON.
           channels: ["Facebook Ads", "TikTok Ads", "Google Ads"],
           budget: "Budget initial recommandé: 5000€/mois",
           launchPlan: "Lancement en 3 phases: test, optimisation, scale"
-        },
-        operationalRecommendations: {
-          testQuantity: 100,
-          vigilancePoints: ["Surveiller métriques performance", "Valider qualité produit", "Optimiser coûts logistiques"]
         },
         prompt
       }

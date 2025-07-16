@@ -67,13 +67,27 @@ export interface AnalysisReport {
   }
   marketingStrategy: {
     channels: string[]
-    angles: string[]
-    recommendedPrice: number
+    angles?: string[]
+    recommendedPrice?: number
+    budget?: string
+    launchPlan?: string
   }
-  operationalRecommendations: {
-    testQuantity: number
-    vigilancePoints: string[]
-  }
+  // Professional report fields (v2.0)
+  executiveSummary?: string
+  riskAssessment?: string
+  competitiveAnalysis?: any
+  marketAnalysis?: any
+  demandValidation?: any
+  productTesting?: any
+  sourcingStrategy?: any
+  tiktokStrategy?: any
+  metaAdsStrategy?: any
+  operationalPlan?: any
+  financialProjections?: any
+  implementationRoadmap?: any
+  kpiDashboard?: any
+  contingencyPlans?: any
+  reportVersion?: string
   createdAt: Date
 }
 

@@ -35,6 +35,64 @@ function generateContextualGuidancePrompt(section: string, field: string, contex
   // Prompts spécialisés par section/champ
   switch (`${section}-${field}`) {
     // SECTION ESSENTIAL
+    
+    case 'essential-descriptionImprovement':
+      return `${baseContext}
+      
+      ✨ AMÉLIORATION AUTOMATIQUE - Description professionnelle
+      
+      Ta description actuelle: "${description}"
+      
+      Je vais maintenant créer une version professionnelle optimisée:
+      
+      Action Guidée:
+      1. ANALYSE: J'identifie les bénéfices clés dans ta description de base
+      2. STRUCTURE: Problème → Solution → Bénéfices → Différenciation
+      3. OPTIMISATION: J'ajoute des mots-clés pertinents pour le marché canadien
+      4. PROPOSITION: Voici ta description améliorée:
+      
+      [L'IA va générer une description professionnelle optimisée basée sur tes informations de base]
+      
+      🎯 Utilise cette version optimisée pour améliorer tes performances sur les plateformes e-commerce.`
+      
+    case 'essential-sourcingGuide':
+      return `${baseContext}
+      
+      📋 GUIDE COMPLET - Recherche de fournisseur pour "${productName}"
+      
+      🔍 ÉTAPE 1: Recherche de prix de marché
+      1. Va sur 1688.com (version chinoise d'Alibaba)
+      2. Cherche: "${productName?.toLowerCase()}" et variantes
+      3. Note PRIX BAS et PRIX HAUT des 10 premiers résultats
+      4. Ces prix = référence du marché chinois (prix réels)
+      
+      🏪 ÉTAPE 2: Recherche fournisseur fiable
+      1. Va sur Alibaba.com
+      2. Tape: "${productName} supplier" + "${category} manufacturer"
+      3. CHECKLIST FOURNISSEUR FIABLE:
+         ✅ Trade Assurance activé
+         ✅ Supplier Assessment 4+ étoiles
+         ✅ 5+ années d'expérience
+         ✅ 50+ transactions
+         ✅ Réponse <24h à tes messages
+         ✅ Photos de l'usine/certificats
+      
+      📞 ÉTAPE 3: Contact et évaluation
+      1. Contacte 3-5 fournisseurs avec ce message:
+         "Hello, interested in ${productName} for Canadian market. Need:
+         - MOQ and pricing (100/500/1000 units)
+         - Lead time and samples
+         - Quality certificates (CE/FDA if applicable)
+         - Payment terms"
+      2. Compare rapidité de réponse et professionnalisme
+      3. Demande des échantillons avant commande importante
+      
+      ⚠️ CRITÈRES D'ÉLIMINATION:
+      - Prix 50%+ en dessous du marché = suspect
+      - Pas de Trade Assurance = risqué
+      - Réponses génériques = pas sérieux
+      - Refuse les échantillons = éviter`
+    
     case 'essential-productName':
       return `${baseContext}
       
@@ -50,22 +108,113 @@ function generateContextualGuidancePrompt(section: string, field: string, contex
       
       🎯 Pour ${category}: privilégie les mots qui évoquent la solution/transformation rather que la description technique.`
       
-    case 'essential-sourcing':
+    // Removed old sourcing case - replaced with sourcingGuide
+
+    // SECTION PRICING - Step 2
+    case 'pricing-autoSellingPrice':
       return `${baseContext}
       
-      🔍 AIDE PERSONNALISÉE - Recherche fournisseur pour "${productName}"
+      🎯 GÉNÉRATION AUTOMATIQUE - Prix de vente optimal pour "${productName}"
       
-      Action Guidée spécifique à votre produit:
-      1. Ouvre Alibaba.com et tape exactement ces termes: "${productName?.toLowerCase().replace(/\s+/g, ' ')}", puis "${category?.toLowerCase()} supplier"
-      2. Applique ces filtres:
-         - Trade Assurance: OUI
-         - Supplier Assessment: 4+ étoiles  
-         - Years in Industry: 5+ ans
-      3. Cherche ces certifications selon votre catégorie ${category}: CE, FDA, RoHS
-      4. Contacte 3-5 fournisseurs avec ce message type: "Hello, interested in ${productName} for Canadian market. Please send: MOQ, pricing for 100/500/1000 units, lead time, and quality certificates."
+      Données collectées:
+      - Prix unitaire: ${context.unitPrice || 'Non défini'} CAD
+      - Frais livraison: ${context.shippingCost || 0} CAD
+      - Coût branding: ${context.brandingCost || 0} CAD
+      - Coût total: ${context.totalCosts || 'Calcul en cours'} CAD
+      - Prix concurrents: ${context.competitorPrices?.length ? context.competitorPrices.join(', ') + ' CAD' : 'Aucun défini'}
       
-      💡 Astuce catégorie ${category}: Focus sur les fournisseurs avec expérience export Canada/US.`
-
+      📊 CALCUL DE PRIX INTELLIGENT:
+      
+      1. ANALYSE DES COÛTS:
+         Coût de revient total: ${context.totalCosts || 'Non calculé'} CAD
+      
+      2. BENCHMARKING CONCURRENTIEL:
+         ${context.competitorPrices?.length ? 
+           `Prix moyen concurrent: ${(context.competitorPrices.reduce((a, b) => a + b, 0) / context.competitorPrices.length).toFixed(2)} CAD` : 
+           'Aucune donnée concurrentielle disponible'}
+      
+      3. RECOMMANDATION STRATÉGIQUE pour ${category}:
+         Marge recommandée: 60-70% (standard e-commerce)
+         
+      🎯 PRIX DE VENTE SUGGÉRÉ:
+      [L'IA va calculer et proposer 3 stratégies de prix basées sur vos données réelles]
+      
+      ✅ STRATÉGIE 1: Prix pénétration (conquête de marché)
+      ✅ STRATÉGIE 2: Prix optimal (équilibre marge/volume) 
+      ✅ STRATÉGIE 3: Prix premium (positionnement haut de gamme)
+      
+      Utilisez la stratégie qui correspond le mieux à vos objectifs business.`
+    
+    // SECTION TRENDS - Step 3
+    case 'trends-keywordSuggestions':
+      return `${baseContext}
+      
+      🔍 GÉNÉRATION AUTOMATIQUE - Mots-clés pour "${productName}"
+      
+      Basé sur votre produit "${productName}" en catégorie "${category}":
+      
+      📝 MOTS-CLÉS PRINCIPAUX (ANGLAIS - MARCHÉ CANADIEN):
+      
+      1. MOTS-CLÉS PRIMAIRES:
+         [L'IA va générer les termes de recherche principaux basés sur le nom du produit]
+      
+      2. MOTS-CLÉS PROBLÈME/SOLUTION:
+         [Termes liés au problème que résout votre produit]
+      
+      3. MOTS-CLÉS CATÉGORIE:
+         [Termes génériques de la catégorie ${category}]
+      
+      4. MOTS-CLÉS LONGUE TRAÎNE:
+         [Expressions plus spécifiques et moins concurrentielles]
+      
+      🎯 INSTRUCTIONS GOOGLE TRENDS:
+      1. Va sur trends.google.com
+      2. Utilise ces mots-clés UN PAR UN
+      3. Réglages: Canada, 12 mois, catégorie ${category}
+      4. Note la moyenne des pics (>40 = bon, >60 = excellent)
+      
+      💡 CONSEIL: Teste d'abord les mots-clés primaires, puis affine avec les variantes.`
+      
+    case 'trends-ubersuggestGuide':
+      return `${baseContext}
+      
+      📊 GUIDE DÉTAILLÉ - Ubersuggest pour "${productName}"
+      
+      🎯 MOTS-CLÉS À RECHERCHER:
+      [Utilise les mots-clés générés précédemment ou ces suggestions basées sur votre produit]
+      
+      📝 ÉTAPES UBERSUGGEST:
+      
+      1. 🔗 ACCÈS:
+         - Va sur ubersuggest.com (Neil Patel)
+         - Crée un compte gratuit (3 recherches/jour)
+      
+      2. 🌍 CONFIGURATION:
+         - Pays: Canada
+         - Langue: English
+         - Device: Desktop + Mobile
+      
+      3. 🔍 RECHERCHE SYSTÉMATIQUE:
+         Pour chaque mot-clé de "${productName}":
+         a) Tape le mot-clé exact
+         b) Note le "Search Volume" (colonne principale)
+         c) Vérifie "SEO Difficulty" (<30 = facile à ranker)
+         d) Regarde "Keyword Ideas" pour autres variantes
+      
+      4. 📊 COLLECTE DES DONNÉES:
+         - Additionne les volumes des mots-clés principaux
+         - Prends la moyenne si plusieurs variantes
+         - Privilégie les mots-clés avec intention d'achat
+      
+      5. ✅ VALIDATION:
+         Volume total recommandé pour ${category}:
+         - <1000: Niche très spécialisée
+         - 1000-5000: Marché émergent
+         - 5000-20000: Bon potentiel
+         - >20000: Marché établi
+      
+      🎯 RÉSULTAT: Reporte le volume total mensuel dans le champ.`
+    
     // SECTION MARKET-TREND  
     case 'market-trend-googleTrends':
       return `${baseContext}

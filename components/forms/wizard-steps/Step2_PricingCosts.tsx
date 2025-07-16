@@ -75,8 +75,11 @@ export function Step2_PricingCosts() {
             type="number"
             step="0.01"
             min="0"
-            value={formData.unitPrice || ''}
-            onChange={(e) => updateFormData({ unitPrice: Number(e.target.value) })}
+            value={formData.unitPrice !== undefined ? formData.unitPrice : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ unitPrice: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 12.50"
             required
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
@@ -117,8 +120,11 @@ export function Step2_PricingCosts() {
             type="number"
             step="0.01"
             min="0"
-            value={formData.shippingCost || ''}
-            onChange={(e) => updateFormData({ shippingCost: Number(e.target.value) })}
+            value={formData.shippingCost !== undefined ? formData.shippingCost : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ shippingCost: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 8.20"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -158,8 +164,11 @@ export function Step2_PricingCosts() {
             type="number"
             step="0.01"
             min="0"
-            value={formData.brandingCost || ''}
-            onChange={(e) => updateFormData({ brandingCost: Number(e.target.value) })}
+            value={formData.brandingCost !== undefined ? formData.brandingCost : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ brandingCost: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 3.75"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -199,8 +208,11 @@ export function Step2_PricingCosts() {
             type="number"
             step="0.01"
             min="0"
-            value={formData.desiredSellingPrice || ''}
-            onChange={(e) => updateFormData({ desiredSellingPrice: Number(e.target.value) })}
+            value={formData.desiredSellingPrice !== undefined ? formData.desiredSellingPrice : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ desiredSellingPrice: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 39.99"
             required
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
@@ -215,12 +227,15 @@ export function Step2_PricingCosts() {
           {activeAssistance === 'sellingPrice' && (
             <AIAssistancePanel
               section="pricing"
-              field="sellingPrice"
+              field="autoSellingPrice"
               context={{
                 productName: formData.productName,
                 category: formData.category,
                 unitPrice: formData.unitPrice,
-                totalCosts: totalCosts
+                shippingCost: formData.shippingCost,
+                brandingCost: formData.brandingCost,
+                totalCosts: totalCosts,
+                competitorPrices: formData.competitorPrices
               }}
               onClose={() => setActiveAssistance(null)}
             />
@@ -234,13 +249,7 @@ export function Step2_PricingCosts() {
           <Label className="text-sm font-medium">
             Prix des concurrents (CAD)
           </Label>
-          <button
-            type="button"
-            onClick={() => handleAssistanceClick('competitorPrices')}
-            className="text-blue-500 hover:text-blue-700 transition-colors"
-          >
-            <HelpCircle className="w-4 h-4" />
-          </button>
+          {/* AI assistance disabled for competitor prices */}
         </div>
         
         {/* Prix existants */}
@@ -282,18 +291,7 @@ export function Step2_PricingCosts() {
           </Button>
         </div>
         
-        {activeAssistance === 'competitorPrices' && (
-          <AIAssistancePanel
-            section="pricing"
-            field="competitorPrices"
-            context={{
-              productName: formData.productName,
-              category: formData.category,
-              desiredSellingPrice: formData.desiredSellingPrice
-            }}
-            onClose={() => setActiveAssistance(null)}
-          />
-        )}
+        {/* No AI assistance for competitor prices */}
       </div>
 
       {/* Résumé financier */}

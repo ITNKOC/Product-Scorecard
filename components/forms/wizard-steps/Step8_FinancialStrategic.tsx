@@ -69,8 +69,11 @@ export function Step8_FinancialStrategic() {
             id="marketGrowth"
             type="number"
             step="0.1"
-            value={formData.marketGrowthRate || ''}
-            onChange={(e) => updateFormData({ marketGrowthRate: Number(e.target.value) })}
+            value={formData.marketGrowthRate !== undefined ? formData.marketGrowthRate : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ marketGrowthRate: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 12.5"
             required
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
@@ -117,8 +120,11 @@ export function Step8_FinancialStrategic() {
             id="initialInvestment"
             type="number"
             min="0"
-            value={formData.initialInvestment || ''}
-            onChange={(e) => updateFormData({ initialInvestment: Number(e.target.value) })}
+            value={formData.initialInvestment !== undefined ? formData.initialInvestment : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ initialInvestment: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 5000"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />
@@ -158,8 +164,11 @@ export function Step8_FinancialStrategic() {
             id="marketingBudget"
             type="number"
             min="0"
-            value={formData.marketingBudget || ''}
-            onChange={(e) => updateFormData({ marketingBudget: Number(e.target.value) })}
+            value={formData.marketingBudget !== undefined ? formData.marketingBudget : ''}
+            onChange={(e) => {
+              const value = e.target.value;
+              updateFormData({ marketingBudget: value === '' ? undefined : Number(value) });
+            }}
             placeholder="Ex: 1500"
             className="transition-all duration-200 focus:ring-2 focus:ring-blue-500"
           />

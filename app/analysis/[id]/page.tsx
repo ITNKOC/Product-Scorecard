@@ -7,6 +7,7 @@ import { Button } from '@/components/ui/button'
 import Logo from '@/components/ui/Logo'
 import { ProductAnalysisWithUser } from '@/types/product'
 import { downloadAnalysisPDF } from '@/lib/pdf-generator'
+import { ProfessionalReport } from '@/components/ui/professional-report'
 import Link from 'next/link'
 
 export default function AnalysisReportPage() {
@@ -16,7 +17,9 @@ export default function AnalysisReportPage() {
   const [report, setReport] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [generating, setGenerating] = useState(false)
+  const [regenerating, setRegenerating] = useState(false)
   const [exportingPDF, setExportingPDF] = useState(false)
+  const [useProfessionalReport, setUseProfessionalReport] = useState(true)
 
   useEffect(() => {
     if (params.id) {
@@ -56,7 +59,8 @@ export default function AnalysisReportPage() {
     
     setGenerating(true)
     try {
-      const response = await fetch(`/api/generate-analysis-report`, {
+      const endpoint = useProfessionalReport ? '/api/generate-professional-report' : '/api/generate-analysis-report'
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -69,6 +73,27 @@ export default function AnalysisReportPage() {
       console.error('Error generating report:', error)
     } finally {
       setGenerating(false)
+    }
+  }
+
+  const regenerateReport = async () => {
+    if (!analysis) return
+    
+    setRegenerating(true)
+    try {
+      const response = await fetch('/api/generate-professional-report', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ analysisId: analysis.id, regenerate: true })
+      })
+      const newReport = await response.json()
+      setReport(newReport)
+    } catch (error) {
+      console.error('Error regenerating report:', error)
+    } finally {
+      setRegenerating(false)
     }
   }
 
@@ -734,35 +759,59 @@ export default function AnalysisReportPage() {
             </Card>
           )}
 
-          {/* AI Report Section */}
+          {/* Professional AI Report Section */}
           <Card className="p-6 bg-white">
-            <div className="flex justify-between items-center mb-6">
-              <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
-                <span className="text-2xl">🤖</span>
-                Rapport d'Analyse Stratégique
-              </h3>
+            <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+              <div>
+                <h3 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+                  <span className="text-2xl">🤖</span>
+                  Rapport d'Analyse Stratégique Professionnel
+                </h3>
+                <p className="text-sm text-gray-600 mt-1">
+                  Analyse complète avec stratégies marketing, test produit, sourcing et plan d'action
+                </p>
+              </div>
               {!report && (
-                <Button 
-                  onClick={generateReport} 
-                  disabled={generating}
-                  className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
-                >
-                  {generating ? (
-                    <>
-                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                      Génération en cours...
-                    </>
-                  ) : (
-                    <>
-                      <span className="mr-2">✨</span>
-                      Générer le rapport IA
-                    </>
-                  )}
-                </Button>
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <label className="flex items-center gap-2 text-sm">
+                    <input
+                      type="checkbox"
+                      checked={useProfessionalReport}
+                      onChange={(e) => setUseProfessionalReport(e.target.checked)}
+                      className="rounded"
+                    />
+                    <span>Rapport Professionnel</span>
+                  </label>
+                  <Button 
+                    onClick={generateReport} 
+                    disabled={generating}
+                    className="bg-gradient-to-r from-blue-600 to-purple-600 hover:from-blue-700 hover:to-purple-700 text-white"
+                  >
+                    {generating ? (
+                      <>
+                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                        Génération en cours...
+                      </>
+                    ) : (
+                      <>
+                        <span className="mr-2">✨</span>
+                        Générer le rapport IA
+                      </>
+                    )}
+                  </Button>
+                </div>
               )}
             </div>
 
             {report ? (
+              report.reportVersion === 'v2.0-professional' ? (
+                <ProfessionalReport 
+                  report={report}
+                  analysis={analysis}
+                  onRegenerate={regenerateReport}
+                  regenerating={regenerating}
+                />
+              ) : (
               <div className="space-y-8">
                 {/* Customer Persona */}
                 <div className="bg-gradient-to-r from-blue-50 to-purple-50 p-6 rounded-lg border border-blue-200">
@@ -992,12 +1041,12 @@ export default function AnalysisReportPage() {
                     <div>
                       <div className="bg-blue-50 p-4 rounded-lg mb-4">
                         <h5 className="font-semibold text-blue-800 mb-2">Quantité de Test</h5>
-                        <p className="text-2xl font-bold text-blue-900">{report.operationalRecommendations?.testQuantity || 'N/A'} unités</p>
+                        <p className="text-2xl font-bold text-blue-900">{report.operationalRecommendations?.testQuantity || report.productTesting?.quantity || 100} unités</p>
                       </div>
-                      {report.operationalRecommendations?.inventoryStrategy && (
+                      {(report.operationalRecommendations?.inventoryStrategy || report.operationalPlan?.inventory) && (
                         <div className="bg-green-50 p-4 rounded-lg">
                           <h5 className="font-semibold text-green-800 mb-2">Stratégie d'Inventaire</h5>
-                          <p className="text-sm text-green-700">{report.operationalRecommendations?.inventoryStrategy}</p>
+                          <p className="text-sm text-green-700">{report.operationalRecommendations?.inventoryStrategy || JSON.stringify(report.operationalPlan?.inventory)}</p>
                         </div>
                       )}
                     </div>
@@ -1005,7 +1054,7 @@ export default function AnalysisReportPage() {
                     <div>
                       <h5 className="font-semibold text-gray-800 mb-3">Points de Vigilance</h5>
                       <ul className="space-y-2">
-                        {report.operationalRecommendations?.vigilancePoints?.map((point: string, index: number) => (
+                        {(report.operationalRecommendations?.vigilancePoints || report.riskAssessment ? ['Surveillance continue requise'] : [])?.map((point: string, index: number) => (
                           <li key={index} className="flex items-start gap-2 text-sm">
                             <span className="text-red-500 mt-1">⚠️</span>
                             <span className="text-gray-700">{point}</span>
@@ -1020,11 +1069,11 @@ export default function AnalysisReportPage() {
                     </div>
                   </div>
                   
-                  {report.operationalRecommendations?.kpis && (
+                  {(report.operationalRecommendations?.kpis || report.kpiDashboard) && (
                     <div className="mt-4 bg-gray-50 p-4 rounded-lg">
                       <h5 className="font-medium text-gray-800 mb-2">KPIs à Surveiller</h5>
                       <div className="flex flex-wrap gap-2">
-                        {report.operationalRecommendations?.kpis?.map((kpi: string, index: number) => (
+                        {(report.operationalRecommendations?.kpis || Object.values(report.kpiDashboard || {}).flat())?.map((kpi: string, index: number) => (
                           <span key={index} className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
                             {kpi}
                           </span>
@@ -1058,6 +1107,7 @@ export default function AnalysisReportPage() {
                   </div>
                 )}
               </div>
+              )
             ) : (
               <div className="text-center py-12">
                 <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-4">
